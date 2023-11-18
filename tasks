@@ -1,0 +1,24 @@
+todos:
+add arguments:
+	rewrite default config
+	use custom config path
+	add alias via cli?
+	help to explain arguments
+
+work on documentation
+	update readme with useage instructions
+	 manpage?
+	
+publish on cargo:
+	figure out how
+	publish 
+	test
+
+publish on flatpak:
+	figure out how to build a cli app
+	ask help probably
+	publish 
+	test
+
+dones:
+improve msg when loading from config

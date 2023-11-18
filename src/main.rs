@@ -1,5 +1,6 @@
 use std::fs::{OpenOptions};
 use std::io::Write;
+use std::path::Path;
 use std::process::Command;
 use confy::ConfyError;
 use serde::{Deserialize, Serialize};
@@ -13,21 +14,28 @@ struct Config {
     destination_path:String,
 }
 
+const APP_NAME: &str = "flatpak_aliaser";
+const CONF_NAME: &str = "conf";
+const OUT_FILE_NAME: &str = ".flatpak_aliases";
+
 impl Default for  Config{
     fn default()->Self{
-        let mut home_path = dirs::home_dir().unwrap().to_str().unwrap().to_string();
-        home_path.push_str("/.flatpak_aliases");
         Config{
             do_not_alias: vec!["app.example.org".to_string()],
             special_alias: vec![("app.example.org".to_string(), "example".to_string()
                                  , "--some --options".to_string())],
             decapitalize: true,
-            destination_path: home_path ,
+            destination_path: get_default_config_path() ,
         }
     }
 }
 
-
+fn get_default_config_path()-> String{
+    let mut config_path = dirs::home_dir().unwrap().to_str().unwrap().to_string();
+    config_path.push_str("/");
+    config_path.push_str(OUT_FILE_NAME);
+    config_path
+}
 
 fn main() {
 /*    let matches = App::new("flatpak aliaser")
@@ -46,7 +54,6 @@ fn main() {
             .help("Five less than your favorite number"))
         .get_matches();*/
 
-
     let stdout =String::from_utf8( Command::new("flatpak")
         .arg("list")
         .arg("--app")
@@ -54,12 +61,18 @@ fn main() {
         .output()
         .expect("flat command failed to start").stdout).unwrap();
 
-    let c :Result<Config,ConfyError> = confy::load("flatpak_aliaser", "conf");
+    let config_exists = Path::new(&get_default_config_path()).exists();
+
+    let c :Result<Config,ConfyError> = confy::load(APP_NAME,  CONF_NAME);
     let conf:Config;
 
     if c.is_ok(){
         conf  = c.unwrap();
-        println!("loaded config or created new config with defaults");
+        if config_exists{
+            println!("loaded config from file");
+        }else {
+            println!("loaded default config")
+        }
     }else {
         let err = c.err().unwrap();
         print!("could not load conf ");
@@ -79,7 +92,6 @@ fn main() {
         conf = Config::default();
     }
 
-
     let mut lines:Vec<_> =  stdout.split("\n").map(|e| e.to_string()).collect();
     lines.remove(lines.len()-1);
     let mut aliases:Vec<String> = vec![];
@@ -90,7 +102,6 @@ fn main() {
         }
     }
 
-
     let mut out_file = OpenOptions::new()
         .create(true)
         .write(true)
@@ -98,16 +109,11 @@ fn main() {
         .open(conf.destination_path)
         .unwrap();
 
-    println!("writing to outfile");
+    println!("writing to {}", OUT_FILE_NAME);
     for line in aliases{
         out_file.write(format!("{}\n", line).as_bytes()).unwrap();
     }
     println!("done")
-    /*if config_loaded_success{
-        confy::store("flatpak_aliaser","conf", conf).unwrap();
-    }*/
-
-
 }
 
 
@@ -121,9 +127,9 @@ fn standard_alias(app_id:&String, conf:&Config)-> Option<String>{
         }
     }
     let segments: Vec<_> =  app_id.split(".").map(|e| e.to_string()).collect();
-    let mut app_name = segments[segments.len()-1].clone();
+    let mut flatpak_app_id = segments[segments.len()-1].clone();
     if conf.decapitalize{
-        app_name = app_name.to_lowercase();
+        flatpak_app_id = flatpak_app_id.to_lowercase();
     }
-    return Some(format!("alias {}='flatpak run {}'",app_name , app_id))
+    return Some(format!("alias {}='flatpak run {}'", flatpak_app_id, app_id))
 }
