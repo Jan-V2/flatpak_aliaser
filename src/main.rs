@@ -20,7 +20,7 @@ impl Default for  Config{
         Config{
             do_not_alias: vec!["app.example.org".to_string()],
             special_alias: vec![("app.example.org".to_string(), "example".to_string()
-                                 , "flatpak run app.example.org --some --options".to_string())],
+                                 , "--some --options".to_string())],
             decapitalize: true,
             destination_path: home_path ,
         }
