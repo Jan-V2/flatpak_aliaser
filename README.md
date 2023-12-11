@@ -16,7 +16,7 @@ First you'd need to install the discord flatpak by running `flatpak install flat
 Once installation has completed, run this program by running `flatpak_aliaser`.
 
 If the program runs succesfully, it will create a new file at `~/.flatpak_aliases`.
-This file should contain the line: `alias discord='flatpak run com.discordapp.Discord'.
+This file should contain the line: `alias discord='flatpak run com.discordapp.Discord'`.
 
 To add the alias to your enviorment, first open your bashrc by running `nano ~/.bashrc`, and adding `. ~/.flatpak_aliases` to the end of that file.
 Finally, restart your terminal, to load the new aliases.
