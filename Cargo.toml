@@ -2,7 +2,10 @@
 name = "flatpak_aliaser"
 version = "0.1.0"
 edition = "2021"
-
+documentation = "https://github.com/Jan-V2/flatpak_aliaser"
+homepage = "https://github.com/Jan-V2/flatpak_aliaser"
+license = "GPL-2.0"
+description = "Simple application that generates command aliases for flatpak packages"
 
 [dependencies]
 clap = { version = "4.4.7", features = ["derive"] }
