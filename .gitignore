@@ -1,5 +1,5 @@
 /target
 .idea
 Cargo.lock
-/buildir
+/buil-dir
 /.flatpak-builder
