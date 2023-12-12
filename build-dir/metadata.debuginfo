@@ -1,0 +1,5 @@
+[Runtime]
+name=com.jan_v2.flatpak_aliaser.Debug
+
+[ExtensionOf]
+ref=app/com.jan_v2.flatpak_aliaser/x86_64/master

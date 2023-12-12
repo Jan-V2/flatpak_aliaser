@@ -1,0 +1,14 @@
+id: com.jan_v2.flatpak_aliaser
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+command: flatpak_aliaser
+finish-args: [ --filesystem=home,  --filesystem=xdg-config, --socket=session-bus ]
+modules:
+  - name: flatpak_aliaser
+    buildsystem: simple
+    build-commands:
+      - install -D flatpak_aliaser /app/bin/flatpak_aliaser
+    sources:
+      - type: file
+        path: target/debug/flatpak_aliaser
